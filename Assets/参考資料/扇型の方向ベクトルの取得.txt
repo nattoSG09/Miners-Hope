@@ -1,0 +1,6 @@
+１．移動ベクトル(XMLoadFloat3(&transform.position))を取得
+２．prevPositionを取得
+３．prevpositionと現在の位置が違うとき、
+prevPositionと、currentポジションを結ぶベクトルを作成。
+
+４．そのベクトルを扇形の方向ベクトルとして扱う
