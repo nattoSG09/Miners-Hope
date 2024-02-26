@@ -8,7 +8,8 @@ class Player : public GameObject
 	int hModel_;
 	Stage* pStage_;
 
-	XMVECTOR direction_;
+	XMFLOAT3 cameraRotate_;
+
 public:
 	Player(GameObject* parent);
 	void Initialize() override;
