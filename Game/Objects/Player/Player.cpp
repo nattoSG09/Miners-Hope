@@ -28,6 +28,21 @@ namespace {
         // atan2を使用して角度を計算し、返す
         return atan2(crossLength, dotProduct);
     }
+
+    // 線形イージング関数
+    XMFLOAT3 linearEasing(const XMFLOAT3& start, const XMFLOAT3& end, float duration, float currentTime) {
+        float t = currentTime / duration;
+        return XMFLOAT3(
+            start.x + (end.x - start.x) * t,
+            start.y + (end.y - start.y) * t,
+            start.z + (end.z - start.z) * t
+        );
+    }
+
+    // イージング関数
+    XMFLOAT3 easing(const XMFLOAT3& start, const XMFLOAT3& end, float duration, float currentTime) {
+        return linearEasing(start, end, duration, currentTime); // ここで線形イージングを使用
+    }
 }
 
 Player::Player(GameObject* parent)
@@ -52,8 +67,8 @@ void Player::Update()
     CalcCameraMove();
 
     // キャラクターの位置を操作
-    Move();
-
+    //Move();
+   
     // 採掘操作
     Mining();
 

@@ -4,6 +4,7 @@
 #include "../Objects/Images/TitleImage.h"
 
 #include "../../Engine/Camera.h"
+#include "../../Engine/SceneManager.h"
 
 TitleScene::TitleScene(GameObject* parent)
 	:GameObject(parent,"TitleScene")
@@ -29,6 +30,12 @@ void TitleScene::Initialize()
 
 void TitleScene::Update()
 {
+	if (Input::IsKeyDown(DIK_SPACE)) {
+		SceneManager* pSm = (SceneManager*)FindObject("SceneManager");
+		pSm->ChangeScene(SCENE_ID_LOAD, TID_BLACKOUT, 2.f);
+
+	}
+	
 	XMVECTOR sightline{ 0.f,0.f,-1.f,0.f };
 
 	static float angle = 0;
@@ -54,4 +61,5 @@ void TitleScene::Draw()
 
 void TitleScene::Release()
 {
+	OreManager::AllRelease();
 }
