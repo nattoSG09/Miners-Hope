@@ -17,6 +17,9 @@ void Stage::Initialize()
 
 void Stage::Update()
 {
+	circle_.center_ = { 0.f,0.f };
+	circle_.radius_ = 25.f;
+
 	ImGui::Text("stage : type_ = %d", type_);
 }
 
