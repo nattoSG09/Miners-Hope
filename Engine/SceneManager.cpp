@@ -4,6 +4,7 @@
 #include "../Game/Scenes/TestScene.h"
 #include "../Game/Scenes/LoadScene.h"
 #include "../Game/Scenes/ResultScene.h"
+#include "../Game/Scenes/TitleScene.h"
 
 #include "Model.h"
 #include "Image.h"
@@ -20,9 +21,9 @@ SceneManager::SceneManager(GameObject * parent)
 void SceneManager::Initialize()
 {
 	//最初のシーンを準備
-	currentSceneID_ = SCENE_ID_TEST;
+	currentSceneID_ = SCENE_ID_TITLE;
 	nextSceneID_ = currentSceneID_;
-	Instantiate<TestScene>(this);
+	Instantiate<TitleScene>(this);
 }
 
 //更新

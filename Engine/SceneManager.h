@@ -8,7 +8,8 @@ enum SCENE_ID
 {
 	SCENE_ID_TEST = 0,
 	SCENE_ID_LOAD,
-	SCENE_ID_RESULT
+	SCENE_ID_RESULT,
+	SCENE_ID_TITLE,
 };
 
 //-----------------------------------------------------------

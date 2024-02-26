@@ -17,7 +17,6 @@ void Stage::Initialize()
 
 void Stage::Update()
 {
-	ImGui::Text("stage : type_ = %d", type_);
 }
 
 void Stage::Draw()
