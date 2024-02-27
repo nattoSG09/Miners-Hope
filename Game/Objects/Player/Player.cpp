@@ -67,7 +67,7 @@ void Player::Update()
     CalcCameraMove();
 
     // キャラクターの位置を操作
-    //Move();
+    Move();
    
     // 採掘操作
     Mining();
