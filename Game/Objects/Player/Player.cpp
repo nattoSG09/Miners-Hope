@@ -70,7 +70,6 @@ void Player::Update()
    
     // 採掘操作
     Mining();
-
     
 }
 
@@ -140,11 +139,12 @@ void Player::Move()
     // プレイヤーの速度
     float speed = 0.1f;
 
-    // 正規化した視線ベクトルを取得
-    XMVECTOR moveDir = XMVector3Normalize(Camera::GetSightline());
+    // 視線ベクトルを取得
+    XMVECTOR moveDir = Camera::GetSightline();
 
     // Y方向への移動を制限したいので、Y要素を０にする
     moveDir = XMVectorSetY(moveDir, 0);
+    moveDir = XMVector3Normalize(moveDir);
 
     // スピードを乗算
     moveDir *= speed;
@@ -212,21 +212,59 @@ void Player::Move()
 
 void Player::CalcCameraMove()
 {
-    // マウスの移動量から回転量を取得
-    XMFLOAT3 mouseMove = Input::GetMouseMove();
-    cameraRotate_.x += mouseMove.x * SENSITIVITY;
-    cameraRotate_.y += mouseMove.y * SENSITIVITY;
+    // 回転の中心位置を設定
+    XMFLOAT3 center = transform_.position_;
+    center.y += 4.f;
 
-    // 初期値を示すベクトルを用意（ｚ＋方向ベクトル）
-    XMVECTOR sightDirection = { 0.f,0.f,1.f,0.f };
+    XMVECTOR sightline{ 0,0,1,0 };
 
-    XMFLOAT3 tmpCameraRotate = {cameera}
-    
+    // カメラの焦点を設定
+    XMFLOAT3 cam_target{}; {
+        /*回転させる*/ {
+            static XMFLOAT2 angle{};
+            XMFLOAT3 mouseMove = Input::GetMouseMove();
+            angle.x += mouseMove.y;
+            angle.y += mouseMove.x;
+
+            if (angle.x < -80.f)angle.x -= mouseMove.y;
+            if (angle.x > 80.f)angle.x -= mouseMove.y;
+
+            XMMATRIX matRotate = XMMatrixRotationX(XMConvertToRadians(angle.x)) * XMMatrixRotationY(XMConvertToRadians(angle.y));
+            sightline = XMVector3Transform(sightline, matRotate);
+        }
+
+        // 長さを加える
+        float distance = 6.f;
+        sightline *= distance;
+
+        // 原点からの位置を求める
+        XMVECTOR origin_To_camTgt = XMLoadFloat3(&center) + sightline;
+        XMStoreFloat3(&cam_target, origin_To_camTgt);
+
+    }
+    Camera::SetTarget(cam_target);
+
+
+    // カメラの位置を設定
+    XMFLOAT3 cam_position{}; {
+        XMVECTOR inv_sightline = -sightline;
+        
+        /*回転させる*/ {
+            XMMATRIX matRotate = XMMatrixRotationY(XMConvertToRadians(-40));
+            inv_sightline = XMVector3Transform(inv_sightline, matRotate);
+        }
+
+        // 原点からの位置を求める
+        XMVECTOR origin_To_camPos = XMLoadFloat3(&center) + inv_sightline;
+        XMStoreFloat3(&cam_position, origin_To_camPos);
+    }
+    Camera::SetPosition(cam_position);
+
 }
 
 void Player::Mining()
 {
-    ImGui::Begin("miningData");
+    //ImGui::Begin("miningData");
 
     int i = 0;
     for (auto& ore : OreManager::ores_) {
@@ -240,7 +278,7 @@ void Player::Mining()
             Model::RayCast(ore->GetModelHandle(), &sightRay);
 
             // debug
-            ImGui::Text("Ore[%d].sightRay.hit = %s",i,sightRay.hit ? "true" : "false");
+            //ImGui::Text("Ore[%d].sightRay.hit = %s",i,sightRay.hit ? "true" : "false");
         }
 
         // 採掘可能かどうか
@@ -261,11 +299,11 @@ void Player::Mining()
                 isMining = false;
             }
         }
-        ImGui::Text("Ore[%d].duravity = %d",i, ore->GetDurability());
-        ImGui::Text("Ore[%d].isMining = %s",i, isMining ? "true" : "false");
+        //ImGui::Text("Ore[%d].duravity = %d",i, ore->GetDurability());
+        //ImGui::Text("Ore[%d].isMining = %s",i, isMining ? "true" : "false");
 
         i++;
     }
 
-    ImGui::End();
+    //ImGui::End();
 }

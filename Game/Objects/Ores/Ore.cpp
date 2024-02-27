@@ -19,7 +19,7 @@ void Ore::Initialize()
 void Ore::Update()
 {
 	circle_.center_ = { transform_.position_.x,transform_.position_.z };
-	circle_.radius_ = transform_.scale_.x * 1.5f;
+	circle_.radius_ = (transform_.scale_.x * 1.5f) * transform_.scale_.x;
 }
 
 void Ore::Draw()

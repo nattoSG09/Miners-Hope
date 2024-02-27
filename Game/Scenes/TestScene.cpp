@@ -29,20 +29,11 @@ void TestScene::Initialize()
 
 	// プレイヤーを生成
 	pPlayer_ = Instantiate<Player>(this);
-
 }
 
 //更新
 void TestScene::Update()
 {
-	int i = 0;
-	for (auto ore : OreManager::ores_) {
-
-		ImGui::Text("ore[%d].Type = %d",i,ore->GetType() );
-		i++;
-	}
-
-
 	// プレイヤーが出入口を移動したら...
 	if (pPlayer_->IsExitCave() == true) {
 

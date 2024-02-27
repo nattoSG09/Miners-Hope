@@ -42,7 +42,7 @@ void TitleScene::Update()
 	angle += 0.1f;
 	XMMATRIX matRotate = XMMatrixRotationY(XMConvertToRadians(angle));
 	sightline = XMVector3Transform(sightline, matRotate);
-	
+
 	sightline *= 15.f;
 
 	XMFLOAT3 camTgt = Camera::GetTarget();
