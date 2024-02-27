@@ -7,10 +7,10 @@
 
 #include "../../Others/Rect.h"
 #include "../Stage/Stage.h"
-#include "../Ores/OreManager.h"
 #include <fstream>
 #include <map>
 #include <iostream>
+
 
 namespace {
     const float SENSITIVITY = 0.2f;// マウス感度
@@ -50,7 +50,7 @@ namespace {
 }
 
 Player::Player(GameObject* parent)
-	:GameObject(parent,"Player"),hModel_(-1)
+	:GameObject(parent,"Player"),hModel_(-1),direction_(XMVectorSet(0,0,1,0))
 {
 }
 
@@ -61,6 +61,7 @@ void Player::Initialize()
 
 	pStage_ = (Stage*)FindObject("Stage");
     
+    myInventory_.Load("inventory.ini");
 }
 
 void Player::Update()
@@ -73,7 +74,8 @@ void Player::Update()
    
     // 採掘操作
     Mining();
-    
+
+    ImGui::Text("transform_.rotate_ = %f,%f,%f", transform_.rotate_.x, transform_.rotate_.y, transform_.rotate_.z);
 }
 
 void Player::Draw()
@@ -297,9 +299,49 @@ void Player::Mining()
         bool isMining = false;
         if (ore->GetCircle().ContainsPoint(transform_.position_.x, transform_.position_.z)
             && sightRay.hit) {
-
             isMining = true;
             if (Input::IsMouseButtonDown(0)) {
+
+                // Effectを出す
+                {
+                    EmitterData data;
+
+                    //炎
+                    data.textureFileName = "Images/cloudA.png";
+                    data.position = ore->GetPosition();
+                    data.delay = 0;
+                    data.number = 80;
+                    data.lifeTime = 30;
+                    data.direction = XMFLOAT3(0, 1, 0);
+                    data.directionRnd = XMFLOAT3(90, 90, 90);
+                    data.speed = 0.1f;
+                    data.speedRnd = 0.8;
+                    data.size = XMFLOAT2(1.2, 1.2);
+                    data.sizeRnd = XMFLOAT2(0.4, 0.4);
+                    data.scale = XMFLOAT2(1.05, 1.05);
+                    data.color = XMFLOAT4(0.5, 0.5, 0.1, 1);
+                    data.deltaColor = XMFLOAT4(0, -1.0 / 20, 0, -1.0 / 20);
+                    VFX::Start(data);
+
+                    //火の粉
+                    data.delay = 0;
+                    data.number = 80;
+                    data.lifeTime = 100;
+                    data.positionRnd = XMFLOAT3(0.5, 0, 0.5);
+                    data.direction = XMFLOAT3(0, 1, 0);
+                    data.directionRnd = XMFLOAT3(90, 90, 90);
+                    data.speed = 0.25f;
+                    data.speedRnd = 1;
+                    data.accel = 0.93;
+                    data.size = XMFLOAT2(0.1, 0.1);
+                    data.sizeRnd = XMFLOAT2(0.4, 0.4);
+                    data.scale = XMFLOAT2(0.99, 0.99);
+                    data.color = XMFLOAT4(0.4, 0.2, 0.0, 1);
+                    data.deltaColor = XMFLOAT4(0, 0, 0, 0);
+                    data.gravity = 0.003f;
+                    VFX::Start(data);
+                }
+
 
                 if (ore->GetDurability() <= 0) {
                     switch (ore->GetType()) {

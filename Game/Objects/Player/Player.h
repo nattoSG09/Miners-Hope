@@ -1,5 +1,8 @@
 #pragma once
 #include "../../../Engine/GameObject.h"
+#include "../../../Engine/VFX.h"
+
+#include "../Ores/OreManager.h"
 
 class Stage;
 
@@ -34,5 +37,6 @@ private:
 	void Move();
 	void CalcCameraMove();
 	void Mining();
+
 };
 
