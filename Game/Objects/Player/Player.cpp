@@ -8,6 +8,9 @@
 #include "../../Others/Rect.h"
 #include "../Stage/Stage.h"
 #include "../Ores/OreManager.h"
+#include <fstream>
+#include <map>
+#include <iostream>
 
 namespace {
     const float SENSITIVITY = 0.5f;// マウス感度
@@ -81,6 +84,7 @@ void Player::Draw()
 
 void Player::Release()
 {
+    myInventory_.Save("inventory.ini");
 }
 
 bool Player::IsExitCave()
@@ -264,7 +268,14 @@ void Player::CalcCameraMove()
 
 void Player::Mining()
 {
-    //ImGui::Begin("miningData");
+    ImGui::Begin("Inventory"); {
+        ImGui::Text("num_Iron = %d", myInventory_.num_Iron);
+        ImGui::Text("num_Gold = %d", myInventory_.num_Gold);
+        ImGui::Text("num_Diamond = %d", myInventory_.num_Diamond);
+        ImGui::Text("num_Emerald = %d", myInventory_.num_Emerald);
+        ImGui::Text("num_Ruby = %d", myInventory_.num_Ruby);
+    }
+    ImGui::End();
 
     int i = 0;
     for (auto& ore : OreManager::ores_) {
@@ -277,8 +288,6 @@ void Player::Mining()
             sightRay.start = Camera::GetPosition();
             Model::RayCast(ore->GetModelHandle(), &sightRay);
 
-            // debug
-            //ImGui::Text("Ore[%d].sightRay.hit = %s",i,sightRay.hit ? "true" : "false");
         }
 
         // 採掘可能かどうか
@@ -290,20 +299,78 @@ void Player::Mining()
             if (Input::IsMouseButtonDown(0)) {
 
                 if (ore->GetDurability() <= 0) {
+                    switch (ore->GetType()) {
+                    case Ore_Iron: myInventory_.num_Iron++; break;
+                    case Ore_Gold: myInventory_.num_Gold++; break;
+                    case Ore_Diamond: myInventory_.num_Diamond++; break;
+                    case Ore_Emerald: myInventory_.num_Emerald++; break;
+                    case Ore_Ruby: myInventory_.num_Ruby++; break;
+                    }
                     OreManager::Destroy(ore);
                 }
                 else {
+                    switch (ore->GetType()) {
+                    case Ore_Iron: myInventory_.num_Iron++; break;
+                    case Ore_Gold: myInventory_.num_Gold++; break;
+                    case Ore_Diamond: myInventory_.num_Diamond++; break;
+                    case Ore_Emerald: myInventory_.num_Emerald++; break;
+                    case Ore_Ruby: myInventory_.num_Ruby++; break;
+                    }
                     ore->SetDurability(ore->GetDurability() - 1);
                 }
 
                 isMining = false;
             }
         }
-        //ImGui::Text("Ore[%d].duravity = %d",i, ore->GetDurability());
-        //ImGui::Text("Ore[%d].isMining = %s",i, isMining ? "true" : "false");
+        
+    }
+}
 
-        i++;
+void Inventory::Load(std::string _filePath)
+{
+    std::ifstream file(_filePath);
+
+    if (!file.is_open())return;
+
+    std::string line;
+    std::map<std::string, int*> itemMap = {
+        {"Iron", &num_Iron},
+        {"Gold", &num_Gold},
+        {"Diamond", &num_Diamond},
+        {"Emerald", &num_Emerald},
+        {"Ruby", &num_Ruby}
+    };
+
+    while (std::getline(file, line)) {
+        if (line.empty() || line[0] == ';' || line[0] == '#') // Ignore comments and empty lines
+            continue;
+
+        size_t delimiterPos = line.find('=');
+        if (delimiterPos != std::string::npos) {
+            std::string key = line.substr(0, delimiterPos);
+            std::string value = line.substr(delimiterPos + 1);
+
+            if (itemMap.find(key) != itemMap.end()) {
+                *(itemMap[key]) = std::stoi(value);
+            }
+        }
     }
 
-    //ImGui::End();
+    file.close();
+}
+
+void Inventory::Save(std::string _filePath)
+{
+    std::ofstream file(_filePath);
+
+    if (!file.is_open())return;
+
+    file << "[numbers]\n";
+    file << "Iron=" << num_Iron << "\n";
+    file << "Gold=" << num_Gold << "\n";
+    file << "Diamond=" << num_Diamond << "\n";
+    file << "Emerald=" << num_Emerald << "\n";
+    file << "Ruby=" << num_Ruby << "\n";
+
+    file.close();
 }

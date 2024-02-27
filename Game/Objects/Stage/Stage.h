@@ -1,5 +1,6 @@
 #pragma once
 #include "../../../Engine/GameObject.h"
+#include "../../Others/Circle.h"
 #include <vector>
 
 
@@ -12,6 +13,7 @@ class Stage : public GameObject
 	std::vector<int> hModels_;
 	Cave_type type_;
 
+	Circle circle_;
 public:
 	Stage(GameObject* parent);
 	void Initialize() override;
@@ -21,7 +23,7 @@ public:
 
 	Cave_type GetCaveType() { return type_; }
 	void SetCaveType(Cave_type _type) { type_ = _type; }
-
+	Circle GetCaveCircle() { return circle_; }
 private:
 };
 

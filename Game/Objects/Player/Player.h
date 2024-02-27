@@ -3,13 +3,25 @@
 
 class Stage;
 
+struct Inventory
+{
+	int num_Iron;
+	int num_Gold;
+	int num_Diamond;
+	int num_Emerald;
+	int num_Ruby;
+
+	void Load(std::string _filePath);
+	void Save(std::string _filePath);
+};
+
 class Player : public GameObject
 {
 	int hModel_;
 	Stage* pStage_;
 
-	XMFLOAT3 cameraRotate_;
-
+	XMVECTOR direction_;
+	Inventory myInventory_;
 public:
 	Player(GameObject* parent);
 	void Initialize() override;
