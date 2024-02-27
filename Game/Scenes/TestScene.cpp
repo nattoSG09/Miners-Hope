@@ -6,6 +6,7 @@
 #include "../Objects/Player/Player.h"
 #include<iostream>
 #include "../Objects/Ores/OreManager.h"
+#include "../Objects/Images/CrossHair.h"
 
 
 //コンストラクタ
@@ -29,6 +30,8 @@ void TestScene::Initialize()
 
 	// プレイヤーを生成
 	pPlayer_ = Instantiate<Player>(this);
+
+	Instantiate<CrossHair>(this);
 }
 
 //更新

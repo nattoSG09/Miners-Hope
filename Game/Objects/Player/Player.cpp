@@ -13,7 +13,7 @@
 #include <iostream>
 
 namespace {
-    const float SENSITIVITY = 0.5f;// マウス感度
+    const float SENSITIVITY = 0.2f;// マウス感度
     const float PLAYER_TO_CAMERA_DISTANCE = 10.f;
 
     // 二つのベクトルから角度を求める関数(ラジアン)
@@ -226,12 +226,15 @@ void Player::CalcCameraMove()
     XMFLOAT3 cam_target{}; {
         /*回転させる*/ {
             static XMFLOAT2 angle{};
-            XMFLOAT3 mouseMove = Input::GetMouseMove();
-            angle.x += mouseMove.y;
-            angle.y += mouseMove.x;
+            static float sensitivity = 1;
+            ImGui::SliderFloat("sensitivity:", &sensitivity, 0, 1);
 
-            if (angle.x < -80.f)angle.x -= mouseMove.y;
-            if (angle.x > 80.f)angle.x -= mouseMove.y;
+            XMFLOAT3 mouseMove = Input::GetMouseMove();
+            angle.x += mouseMove.y * sensitivity;
+            angle.y += mouseMove.x * sensitivity;
+
+            if (angle.x < -80.f)angle.x -= mouseMove.y * sensitivity;
+            if (angle.x > 80.f)angle.x -= mouseMove.y * sensitivity;
 
             XMMATRIX matRotate = XMMatrixRotationX(XMConvertToRadians(angle.x)) * XMMatrixRotationY(XMConvertToRadians(angle.y));
             sightline = XMVector3Transform(sightline, matRotate);
