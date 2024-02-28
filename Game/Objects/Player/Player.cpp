@@ -292,8 +292,6 @@ void Player::CalcCameraMove()
 
         XMStoreFloat3(&cam_target, XMLoadFloat3(&center) + ab);
         XMStoreFloat3(&cam_position, XMLoadFloat3(&center) - ab);
-
-       
     }
 
 
