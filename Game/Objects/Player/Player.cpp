@@ -224,10 +224,13 @@ void Player::CalcCameraMove()
 
     XMVECTOR sightline{ 0,0,1,0 };
 
+    
+    static XMFLOAT2 angle{};
+    float distance = 6.f;
+
     // カメラの焦点を設定
     XMFLOAT3 cam_target{}; {
         /*回転させる*/ {
-            static XMFLOAT2 angle{};
             static float sensitivity = 1;
             ImGui::SliderFloat("sensitivity:", &sensitivity, 0, 1);
 
@@ -238,12 +241,12 @@ void Player::CalcCameraMove()
             if (angle.x < -80.f)angle.x -= mouseMove.y * sensitivity;
             if (angle.x > 80.f)angle.x -= mouseMove.y * sensitivity;
 
-            XMMATRIX matRotate = XMMatrixRotationX(XMConvertToRadians(angle.x)) * XMMatrixRotationY(XMConvertToRadians(angle.y));
+            XMMATRIX matRotate = XMMatrixRotationY(XMConvertToRadians(angle.y));
             sightline = XMVector3Transform(sightline, matRotate);
         }
 
         // 長さを加える
-        float distance = 6.f;
+        
         sightline *= distance;
 
         // 原点からの位置を求める
@@ -251,8 +254,6 @@ void Player::CalcCameraMove()
         XMStoreFloat3(&cam_target, origin_To_camTgt);
 
     }
-    Camera::SetTarget(cam_target);
-
 
     // カメラの位置を設定
     XMFLOAT3 cam_position{}; {
@@ -267,6 +268,37 @@ void Player::CalcCameraMove()
         XMVECTOR origin_To_camPos = XMLoadFloat3(&center) + inv_sightline;
         XMStoreFloat3(&cam_position, origin_To_camPos);
     }
+
+    // 中心点を変更
+    {
+        sightline = XMVector3Normalize(XMLoadFloat3(&cam_target) - XMLoadFloat3(&cam_position));
+        sightline = XMVector3Transform(sightline, XMMatrixRotationY(90));
+
+        XMVECTOR ao = XMLoadFloat3(&center) + XMLoadFloat3(&cam_target);
+        float ab_dist = XMVectorGetX(XMVector3Length(sightline));
+        float at_dist = ab_dist / 2;
+        float ao_dist = XMVectorGetX(XMVector3Length(ao));
+        float dist = (at_dist * at_dist) + (ao_dist * ao_dist);
+        dist = sqrt(dist);
+
+        sightline *= dist;
+        XMStoreFloat3(&center, XMLoadFloat3(&center) + sightline);
+    }
+
+    // X回転させる
+    /*{
+        sightline = XMLoadFloat3(&center) + XMLoadFloat3(&cam_target);
+        XMMATRIX matRotate = XMMatrixRotationX(XMConvertToRadians(angle.x));
+        sightline = XMVector3Transform(sightline, matRotate);
+        
+        XMStoreFloat3(&cam_target, sightline);
+
+        XMVECTOR inv_sightline = -sightline;
+        XMStoreFloat3(&cam_position, inv_sightline);
+
+    }*/
+    
+    Camera::SetTarget(cam_target);
     Camera::SetPosition(cam_position);
 
 }
