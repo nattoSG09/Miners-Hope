@@ -13,8 +13,6 @@
 
 
 namespace {
-    const float SENSITIVITY = 0.2f;// マウス感度
-    const float PLAYER_TO_CAMERA_DISTANCE = 10.f;
 
     // 二つのベクトルから角度を求める関数(ラジアン)
     float AngleBetweenVectors(XMVECTOR& _vec1, XMVECTOR& _vec2) {
@@ -59,6 +57,9 @@ void Player::Initialize()
 	hModel_ = Model::Load("Models/Player/Walking.fbx");
 	assert(hModel_ >= 0);
 
+    hPoint_ = Model::Load("DebugCollision/Point.fbx");
+    assert(hPoint_ >= 0);
+
 	pStage_ = (Stage*)FindObject("Stage");
     
     myInventory_.Load("inventory.ini");
@@ -82,6 +83,11 @@ void Player::Draw()
 {
 	Model::SetTransform(hModel_, transform_);
 	Model::Draw(hModel_);
+
+    Transform t;
+    t.position_ = newCenter_;
+    Model::SetTransform(hPoint_, t);
+    Model::Draw(hPoint_);
 }
 
 void Player::Release()
@@ -218,86 +224,86 @@ void Player::Move()
 
 void Player::CalcCameraMove()
 {
-    // 回転の中心位置を設定
+    // 回転の中心位置を設定①
     XMFLOAT3 center = transform_.position_;
     center.y += 4.f;
+    ImGui::Text("center = %f,%f,%f", center.x, center.y, center.z);
 
-    XMVECTOR sightline{ 0,0,1,0 };
+    // カメラの焦点・位置を格納する変数を用意
+    XMFLOAT3 camTarget{};
+    XMFLOAT3 camPosition{};
 
-    
-    static XMFLOAT2 angle{};
-    float distance = 6.f;
+    // 回転のための情報を取得
+    static XMFLOAT2 angle{};    // 回転量
+    static float sensitivity = 0.3f;    // 感度
+    {
+        // マウス感度を設定・取得
+        ImGui::SliderFloat("sensitivity", &sensitivity, 0, 1);
 
-    // カメラの焦点を設定
-    XMFLOAT3 cam_target{}; {
-        /*回転させる*/ {
-            static float sensitivity = 1;
-            ImGui::SliderFloat("sensitivity:", &sensitivity, 0, 1);
+        // マウスの移動量から回転量を設定・取得
+        XMFLOAT3 mouseMove = Input::GetMouseMove();
+        angle.x += mouseMove.y * sensitivity;
+        angle.y += mouseMove.x * sensitivity;
 
-            XMFLOAT3 mouseMove = Input::GetMouseMove();
-            angle.x += mouseMove.y * sensitivity;
-            angle.y += mouseMove.x * sensitivity;
+        // ｘ軸回転の上限・下限を設定し回転を制限
+        {
+            const float upperlimit = -80.f;
+            if (angle.x < upperlimit)angle.x -= mouseMove.y * sensitivity;
 
-            if (angle.x < -80.f)angle.x -= mouseMove.y * sensitivity;
-            if (angle.x > 80.f)angle.x -= mouseMove.y * sensitivity;
-
-            XMMATRIX matRotate = XMMatrixRotationY(XMConvertToRadians(angle.y));
-            sightline = XMVector3Transform(sightline, matRotate);
+            const float lowerlimit = 80.f;
+            if (angle.x > lowerlimit)angle.x -= mouseMove.y * sensitivity;
         }
+    }
+
+     // ｙ軸の回転を行う
+    {
+        // 回転行列を作成
+        XMMATRIX rotateY = XMMatrixRotationY(XMConvertToRadians(angle.y));
+
+        // ↑の行列を元に回転
+        XMVECTOR center_To_camTarget = { 0,0,1,0 };
+        center_To_camTarget = XMVector3Transform(center_To_camTarget, rotateY);
 
         // 長さを加える
-        
-        sightline *= distance;
+        float center_To_camTargetDistance = 6.f;
+        center_To_camTarget *= center_To_camTargetDistance;
 
-        // 原点からの位置を求める
-        XMVECTOR origin_To_camTgt = XMLoadFloat3(&center) + sightline;
-        XMStoreFloat3(&cam_target, origin_To_camTgt);
+        // 原点からの位置を求めて、カメラの焦点を設定
+        XMVECTOR origin_To_camTarget = XMLoadFloat3(&center) + center_To_camTarget;
+        XMStoreFloat3(&camTarget, origin_To_camTarget);
 
+        // center_To_camTargetの逆ベクトルを用意
+        XMVECTOR center_To_camPosition = -center_To_camTarget;
+
+        // ちょっと回転させる
+        center_To_camPosition = XMVector3Transform(center_To_camPosition, XMMatrixRotationY(XMConvertToRadians(-40)));
+
+        // 原点からの位置を求めて、カメラの位置を設定
+        XMVECTOR origin_To_camPosition = XMLoadFloat3(&center) + center_To_camPosition;
+        XMStoreFloat3(&camPosition,origin_To_camPosition);
     }
-
-    // カメラの位置を設定
-    XMFLOAT3 cam_position{}; {
-        XMVECTOR inv_sightline = -sightline;
-        
-        /*回転させる*/ {
-            XMMATRIX matRotate = XMMatrixRotationY(XMConvertToRadians(-40));
-            inv_sightline = XMVector3Transform(inv_sightline, matRotate);
-        }
-
-        // 原点からの位置を求める
-        XMVECTOR origin_To_camPos = XMLoadFloat3(&center) + inv_sightline;
-        XMStoreFloat3(&cam_position, origin_To_camPos);
-    }
-
-    // 中心点を変更してX回転させる
+    
+    // ｘ回転を行う
     {
-        XMVECTOR ab = XMLoadFloat3(&cam_target) - XMLoadFloat3(&cam_position);
-        XMVECTOR ot = XMVector3Normalize(XMVector3Transform(ab, XMMatrixRotationY(90)));
+        // 中心を移動
+        XMVECTOR newCenter = (XMLoadFloat3(&camPosition) + XMLoadFloat3(&camTarget)) * 0.5f;
+        XMStoreFloat3(&center, newCenter);
+        newCenter_ = center;
+        
 
-        XMVECTOR ao = XMLoadFloat3(&center) + XMLoadFloat3(&cam_target);
-        float ab_dist = XMVectorGetX(XMVector3Length(sightline));
-        float at_dist = ab_dist / 2;
-        float ao_dist = XMVectorGetX(XMVector3Length(ao));
-        float dist = (at_dist * at_dist) + (ao_dist * ao_dist);
-        dist = sqrt(dist);
+        //// 回転行列を作成
+        XMMATRIX rotateX = XMMatrixRotationX(XMConvertToRadians(angle.x));
 
-        ot *= dist;
-        XMStoreFloat3(&center, XMLoadFloat3(&center) + ot);
 
-        // 回転行列を作成
-        XMMATRIX rotateOT = XMMatrixRotationX(XMConvertToRadians(angle.x));
 
-        ab = XMVector3Normalize(ab);
-        ab = XMVector3Transform(ab, rotateOT);
+        XMVECTOR newCenter_To_camTarget = XMLoadFloat3(&camTarget);
+        newCenter_To_camTarget = XMVector3Transform(newCenter_To_camTarget, rotateX);
+        XMVECTOR origin_To_camTarget = XMLoadFloat3(&center) + newCenter_To_camTarget;
 
-        XMStoreFloat3(&cam_target, XMLoadFloat3(&center) + ab);
-        XMStoreFloat3(&cam_position, XMLoadFloat3(&center) - ab);
+        XMStoreFloat3(&camTarget, origin_To_camTarget);
     }
-
-
-
-    Camera::SetTarget(cam_target);
-    Camera::SetPosition(cam_position);
+    Camera::SetTarget(camTarget);
+    Camera::SetPosition(newCenter_);
 
 }
 

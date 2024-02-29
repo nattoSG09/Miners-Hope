@@ -25,6 +25,12 @@ class Player : public GameObject
 
 	XMVECTOR direction_;
 	Inventory myInventory_;
+
+	int hPoint_;
+
+	// debug 
+	XMFLOAT3 center_;
+	XMFLOAT3 newCenter_;
 public:
 	Player(GameObject* parent);
 	void Initialize() override;
