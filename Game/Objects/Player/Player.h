@@ -23,9 +23,8 @@ class Player : public GameObject
 	int hModel_;
 	Stage* pStage_;
 
-	XMVECTOR direction_;
 	Inventory myInventory_;
-
+	XMFLOAT2 angle_;
 	int hPoint_;
 
 	// debug 

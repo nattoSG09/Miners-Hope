@@ -48,7 +48,7 @@ namespace {
 }
 
 Player::Player(GameObject* parent)
-	:GameObject(parent,"Player"),hModel_(-1),direction_(XMVectorSet(0,0,1,0))
+	:GameObject(parent,"Player"),hModel_(-1)
 {
 }
 
@@ -76,7 +76,10 @@ void Player::Update()
     // 採掘操作
     Mining();
 
+    // キャラクターの向きを変更
+    transform_.rotate_.y = angle_.y - 25;
     ImGui::Text("transform_.rotate_ = %f,%f,%f", transform_.rotate_.x, transform_.rotate_.y, transform_.rotate_.z);
+
 }
 
 void Player::Draw()
@@ -227,14 +230,12 @@ void Player::CalcCameraMove()
     // 回転の中心位置を設定①
     XMFLOAT3 center = transform_.position_;
     center.y += 4.f;
-    ImGui::Text("center = %f,%f,%f", center.x, center.y, center.z);
 
     // カメラの焦点・位置を格納する変数を用意
     XMFLOAT3 camTarget{};
     XMFLOAT3 camPosition{};
 
     // 回転のための情報を取得
-    static XMFLOAT2 angle{};    // 回転量
     static float sensitivity = 0.3f;    // 感度
     {
         // マウス感度を設定・取得
@@ -242,23 +243,23 @@ void Player::CalcCameraMove()
 
         // マウスの移動量から回転量を設定・取得
         XMFLOAT3 mouseMove = Input::GetMouseMove();
-        angle.x += mouseMove.y * sensitivity;
-        angle.y += mouseMove.x * sensitivity;
+        angle_.x += mouseMove.y * sensitivity;
+        angle_.y += mouseMove.x * sensitivity;
 
         // ｘ軸回転の上限・下限を設定し回転を制限
         {
             const float upperlimit = -80.f;
-            if (angle.x < upperlimit)angle.x -= mouseMove.y * sensitivity;
+            if (angle_.x < upperlimit)angle_.x -= mouseMove.y * sensitivity;
 
             const float lowerlimit = 80.f;
-            if (angle.x > lowerlimit)angle.x -= mouseMove.y * sensitivity;
+            if (angle_.x > lowerlimit)angle_.x -= mouseMove.y * sensitivity;
         }
     }
 
      // ｙ軸の回転を行う
     {
         // 回転行列を作成
-        XMMATRIX rotateY = XMMatrixRotationY(XMConvertToRadians(angle.y));
+        XMMATRIX rotateY = XMMatrixRotationY(XMConvertToRadians(angle_.y));
 
         // ↑の行列を元に回転
         XMVECTOR center_To_camTarget = { 0,0,1,0 };
@@ -283,7 +284,7 @@ void Player::CalcCameraMove()
         XMStoreFloat3(&camPosition,origin_To_camPosition);
     }
     
-    // ｘ回転を行う
+    // ｘ軸の回転を行う
     {
         // 中心を移動
         XMVECTOR newCenter = (XMLoadFloat3(&camPosition) + XMLoadFloat3(&camTarget)) * 0.5f;
@@ -292,28 +293,27 @@ void Player::CalcCameraMove()
         XMStoreFloat3(&center, newCenter);
         newCenter_ = center;
         
-
-
+        // 縦回転の軸を作成
         XMVECTOR axis = XMLoadFloat3(&center) - XMLoadFloat3(&prevCenter);
 
         //// 回転行列を作成
-        XMMATRIX rotateAxis = XMMatrixRotationAxis(axis,XMConvertToRadians(angle.x));
+        XMMATRIX rotateAxis = XMMatrixRotationAxis(axis,XMConvertToRadians(angle_.x));
 
+        //　焦点を設定 
         XMVECTOR newCenter_To_camTarget = XMLoadFloat3(&camTarget) - XMLoadFloat3(&center);
         newCenter_To_camTarget = XMVector3Transform(newCenter_To_camTarget, rotateAxis);
 
         XMVECTOR origin_To_camTarget = XMLoadFloat3(&center) + newCenter_To_camTarget;
-        
+        XMStoreFloat3(&camTarget, origin_To_camTarget);
+
+        // 位置を設定
         XMVECTOR newCenter_To_camPosition = -newCenter_To_camTarget;
         XMVECTOR origin_To_camPosition = XMLoadFloat3(&center) + newCenter_To_camPosition;
-
-        XMStoreFloat3(&camTarget, origin_To_camTarget);
         XMStoreFloat3(&camPosition, origin_To_camPosition);
 
     }
     Camera::SetTarget(camTarget);
     Camera::SetPosition(camPosition);
-
 }
 
 void Player::Mining()
