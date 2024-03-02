@@ -287,23 +287,32 @@ void Player::CalcCameraMove()
     {
         // íÜêSÇà⁄ìÆ
         XMVECTOR newCenter = (XMLoadFloat3(&camPosition) + XMLoadFloat3(&camTarget)) * 0.5f;
+        
+        XMFLOAT3 prevCenter = center;
         XMStoreFloat3(&center, newCenter);
         newCenter_ = center;
         
 
+
+        XMVECTOR axis = XMLoadFloat3(&center) - XMLoadFloat3(&prevCenter);
+
         //// âÒì]çsóÒÇçÏê¨
-        XMMATRIX rotateX = XMMatrixRotationX(XMConvertToRadians(angle.x));
+        XMMATRIX rotateAxis = XMMatrixRotationAxis(axis,XMConvertToRadians(angle.x));
 
+        XMVECTOR newCenter_To_camTarget = XMLoadFloat3(&camTarget) - XMLoadFloat3(&center);
+        newCenter_To_camTarget = XMVector3Transform(newCenter_To_camTarget, rotateAxis);
 
-
-        XMVECTOR newCenter_To_camTarget = XMLoadFloat3(&camTarget);
-        newCenter_To_camTarget = XMVector3Transform(newCenter_To_camTarget, rotateX);
         XMVECTOR origin_To_camTarget = XMLoadFloat3(&center) + newCenter_To_camTarget;
+        
+        XMVECTOR newCenter_To_camPosition = -newCenter_To_camTarget;
+        XMVECTOR origin_To_camPosition = XMLoadFloat3(&center) + newCenter_To_camPosition;
 
         XMStoreFloat3(&camTarget, origin_To_camTarget);
+        XMStoreFloat3(&camPosition, origin_To_camPosition);
+
     }
     Camera::SetTarget(camTarget);
-    Camera::SetPosition(newCenter_);
+    Camera::SetPosition(camPosition);
 
 }
 
