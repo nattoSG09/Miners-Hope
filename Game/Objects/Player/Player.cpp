@@ -89,6 +89,10 @@ void Player::Draw()
 
     Transform t;
     t.position_ = newCenter_;
+    //Model::SetTransform(hPoint_, t);
+    //Model::Draw(hPoint_);
+
+    t.position_ = Camera::GetPosition();
     Model::SetTransform(hPoint_, t);
     Model::Draw(hPoint_);
 }
