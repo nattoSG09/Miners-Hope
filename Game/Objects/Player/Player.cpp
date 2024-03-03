@@ -53,7 +53,7 @@ Player::Player(GameObject* parent)
 
 void Player::Initialize()
 {
-	hModel_ = Model::Load("Models/Player/Walking02.fbx");
+	hModel_ = Model::Load("Models/Player/Walking.fbx");
 	assert(hModel_ >= 0);
 
     hPoint_ = Model::Load("DebugCollision/Point.fbx");
