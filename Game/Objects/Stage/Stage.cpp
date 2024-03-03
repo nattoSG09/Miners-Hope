@@ -17,6 +17,9 @@ void Stage::Initialize()
 
 void Stage::Update()
 {
+	if (type_ == Cave05)transform_.scale_ = { 2,2,2 };
+
+	ImGui::Text("%d", type_);
 }
 
 void Stage::Draw()

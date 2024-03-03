@@ -46,7 +46,6 @@ namespace {
         return linearEasing(start, end, duration, currentTime); // ここで線形イージングを使用
     }
 }
-
 Player::Player(GameObject* parent)
 	:GameObject(parent,"Player"),hModel_(-1)
 {
@@ -54,7 +53,7 @@ Player::Player(GameObject* parent)
 
 void Player::Initialize()
 {
-	hModel_ = Model::Load("Models/Player/Walking.fbx");
+	hModel_ = Model::Load("Models/Player/Walking02.fbx");
 	assert(hModel_ >= 0);
 
     hPoint_ = Model::Load("DebugCollision/Point.fbx");
@@ -77,9 +76,7 @@ void Player::Update()
     Mining();
 
     // キャラクターの向きを変更
-    transform_.rotate_.y = angle_.y - 25;
     ImGui::Text("transform_.rotate_ = %f,%f,%f", transform_.rotate_.x, transform_.rotate_.y, transform_.rotate_.z);
-
 }
 
 void Player::Draw()
@@ -89,12 +86,6 @@ void Player::Draw()
 
     Transform t;
     t.position_ = newCenter_;
-    //Model::SetTransform(hPoint_, t);
-    //Model::Draw(hPoint_);
-
-    t.position_ = Camera::GetPosition();
-    Model::SetTransform(hPoint_, t);
-    Model::Draw(hPoint_);
 }
 
 void Player::Release()
@@ -177,7 +168,7 @@ void Player::Move()
         // 画面前方に進む
         move = XMLoadFloat3(&transform_.position_) + moveDir;
         XMStoreFloat3(&transform_.position_, move);
-
+        transform_.rotate_.y = angle_.y - 25;
         // アニメーションを動作させる
         isAnim = true;
     }
@@ -189,6 +180,7 @@ void Player::Move()
         moveDir = XMVector3Transform(moveDir, XMMatrixRotationY(XMConvertToRadians(90)));
         move = XMLoadFloat3(&transform_.position_) - moveDir;
         XMStoreFloat3(&transform_.position_, move);
+        transform_.rotate_.y = (angle_.y - 25) - 90;
 
         // アニメーションを動作させる
         isAnim = true;
@@ -200,6 +192,7 @@ void Player::Move()
         // 画面後方に進む
         move = XMLoadFloat3(&transform_.position_) - moveDir;
         XMStoreFloat3(&transform_.position_, move);
+        transform_.rotate_.y = (angle_.y - 25) + 180;
 
         // アニメーションを動作させる
         isAnim = true;
@@ -212,6 +205,7 @@ void Player::Move()
         moveDir = XMVector3Transform(moveDir, XMMatrixRotationY(XMConvertToRadians(90)));
         move = XMLoadFloat3(&transform_.position_) + moveDir;
         XMStoreFloat3(&transform_.position_, move);
+        transform_.rotate_.y = (angle_.y - 25) + 90;
 
         // アニメーションを動作させる
         isAnim = true;
@@ -271,6 +265,8 @@ void Player::CalcCameraMove()
 
         // 長さを加える
         float center_To_camTargetDistance = 6.f;
+        if (Input::IsMouseButton(1))center_To_camTargetDistance = 3.f;
+
         center_To_camTarget *= center_To_camTargetDistance;
 
         // 原点からの位置を求めて、カメラの焦点を設定
@@ -281,7 +277,9 @@ void Player::CalcCameraMove()
         XMVECTOR center_To_camPosition = -center_To_camTarget;
 
         // ちょっと回転させる
-        center_To_camPosition = XMVector3Transform(center_To_camPosition, XMMatrixRotationY(XMConvertToRadians(-40)));
+        float littleAngle = -45.f;
+        if (Input::IsMouseButton(1))littleAngle = -60.f;
+        center_To_camPosition = XMVector3Transform(center_To_camPosition, XMMatrixRotationY(XMConvertToRadians(littleAngle)));
 
         // 原点からの位置を求めて、カメラの位置を設定
         XMVECTOR origin_To_camPosition = XMLoadFloat3(&center) + center_To_camPosition;
@@ -316,6 +314,7 @@ void Player::CalcCameraMove()
         XMStoreFloat3(&camPosition, origin_To_camPosition);
 
     }
+
     Camera::SetTarget(camTarget);
     Camera::SetPosition(camPosition);
 }

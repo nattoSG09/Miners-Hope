@@ -5,7 +5,7 @@
 
 
 enum Cave_type {
-	Cave01, Cave02, Cave03, Cave04, CaveMax
+	Cave01, Cave02, Cave03, Cave04,Cave05, CaveMax
 };
 
 class Stage : public GameObject
@@ -27,8 +27,10 @@ public:
 private:
 };
 
-template<class T>void CreateStage(Cave_type _type, GameObject* parent) {
+template<class T>T* CreateStage(Cave_type _type, GameObject* parent) {
 	T* stage = Instantiate<T>(parent);
 	stage->SetCaveType(_type);
+
+	return stage;
 }
 

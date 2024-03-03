@@ -51,14 +51,17 @@
     <Filter Include="Game\Objects\Ores">
       <UniqueIdentifier>{27826c9f-d7a5-419b-a54a-dc04f8772a91}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\Objects\Enemys">
-      <UniqueIdentifier>{1e01c23e-8625-4fbc-9b2c-d5538463bf04}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Game\Others">
       <UniqueIdentifier>{fd02d351-66a3-47a5-aa1e-2a0dda9e6657}</UniqueIdentifier>
     </Filter>
     <Filter Include="Game\Scenes\ResultScene">
       <UniqueIdentifier>{8eaa8829-d17d-4661-96c6-9b24d5cea81f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Scenes\TitleScene">
+      <UniqueIdentifier>{bcbb618c-ff86-40fa-bb13-f86e3a7f17f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\Images">
+      <UniqueIdentifier>{165023b8-db5d-4d24-bba5-82d5f0dd10c2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -179,6 +182,17 @@
     <ClCompile Include="Game\Objects\Ores\OreManager.cpp">
       <Filter>Game\Objects\Ores</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Scenes\TitleScene.cpp">
+      <Filter>Game\Scenes\TitleScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Images\CrossHair.cpp">
+      <Filter>Game\Objects\Images</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Images\TitleImage.cpp">
+      <Filter>Game\Objects\Images</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\LivingObject.cpp" />
+    <ClCompile Include="Game\Objects\Enemy\Enemy.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\BoxCollider.h">
@@ -304,6 +318,17 @@
     <ClInclude Include="Game\Objects\Ores\OreManager.h">
       <Filter>Game\Objects\Ores</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Scenes\TitleScene.h">
+      <Filter>Game\Scenes\TitleScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Images\TitleImage.h">
+      <Filter>Game\Objects\Images</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Images\CrossHair.h">
+      <Filter>Game\Objects\Images</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\LivingObject.h" />
+    <ClInclude Include="Game\Objects\Enemy\Enemy.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Shader\Simple2D.hlsl">
