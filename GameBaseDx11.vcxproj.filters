@@ -63,6 +63,9 @@
     <Filter Include="Game\Objects\Images">
       <UniqueIdentifier>{165023b8-db5d-4d24-bba5-82d5f0dd10c2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Objects\Enemy">
+      <UniqueIdentifier>{35c06a90-b5b0-456f-88fe-bfdcda22982a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\BoxCollider.cpp">
@@ -191,8 +194,15 @@
     <ClCompile Include="Game\Objects\Images\TitleImage.cpp">
       <Filter>Game\Objects\Images</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Objects\LivingObject.cpp" />
-    <ClCompile Include="Game\Objects\Enemy\Enemy.cpp" />
+    <ClCompile Include="Game\Objects\Images\HpBar.cpp">
+      <Filter>Game\Objects\Images</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Enemy\Enemy.cpp">
+      <Filter>Game\Objects\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\LivingObject.cpp">
+      <Filter>Game\Objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\BoxCollider.h">
@@ -327,8 +337,15 @@
     <ClInclude Include="Game\Objects\Images\CrossHair.h">
       <Filter>Game\Objects\Images</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Objects\LivingObject.h" />
-    <ClInclude Include="Game\Objects\Enemy\Enemy.h" />
+    <ClInclude Include="Game\Objects\Images\HpBar.h">
+      <Filter>Game\Objects\Images</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Enemy\Enemy.h">
+      <Filter>Game\Objects\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\LivingObject.h">
+      <Filter>Game\Objects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Shader\Simple2D.hlsl">

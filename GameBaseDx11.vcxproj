@@ -169,7 +169,11 @@
     <ClCompile Include="Game\Scenes\TitleScene.cpp" />
     <ClCompile Include="Game\Objects\Images\TitleImage.cpp" />
     <ClCompile Include="Game\Objects\LivingObject.cpp" />
+<<<<<<< HEAD
     <ClCompile Include="Game\Objects\Player\Pickaxe.cpp" />
+=======
+    <ClCompile Include="Game\Objects\Images\HpBar.cpp" />
+>>>>>>> 475d8aa746284c7ec37886ec2f4cd74f01ac0c57
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Enemy\Enemy.h" />
@@ -218,7 +222,11 @@
     <ClInclude Include="Game\Scenes\TitleScene.h" />
     <ClInclude Include="Game\Objects\Images\TitleImage.h" />
     <ClInclude Include="Game\Objects\LivingObject.h" />
+<<<<<<< HEAD
     <ClInclude Include="Game\Objects\Player\Pickaxe.h" />
+=======
+    <ClInclude Include="Game\Objects\Images\HpBar.h" />
+>>>>>>> 475d8aa746284c7ec37886ec2f4cd74f01ac0c57
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Shader\BillBoard.hlsl">
