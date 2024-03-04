@@ -150,25 +150,25 @@ void Player::Move()
     float speed = 0.1f;
 
     // 視線ベクトルを取得
-    XMVECTOR moveDir = Camera::GetSightline();
+    XMVECTOR sightline = Camera::GetSightline();
+
+
 
     // Y方向への移動を制限したいので、Y要素を０にする
-    moveDir = XMVectorSetY(moveDir, 0);
-    moveDir = XMVector3Normalize(moveDir);
-
-    // スピードを乗算
-    moveDir *= speed;
+    sightline = XMVectorSetY(sightline, 0);
+    sightline = XMVector3Normalize(sightline);
 
     // 移動方向ベクトルを用意
-    XMVECTOR move{ 0,0,0,0 };
+    XMVECTOR moveDir{ 0,0,0,0 };
 
     // 「Ｗ」キーが押されたら...
     if (Input::IsKey(DIK_W)) {
 
-        // 画面前方に進む
-        move = XMLoadFloat3(&transform_.position_) + moveDir;
-        XMStoreFloat3(&transform_.position_, move);
+        moveDir += sightline;
+        
+        // モデルの向きを変える
         transform_.rotate_.y = angle_.y - 25;
+
         // アニメーションを動作させる
         isAnim = true;
     }
