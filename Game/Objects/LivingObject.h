@@ -14,4 +14,6 @@ public:
 	virtual void Release() override = 0;
 
 	int GatModelHandle() const { return hModel_; }
+	int GetHP()const { return hitPoint_; }
+	void SetHP(int _hp) { hitPoint_ = _hp; }
 };

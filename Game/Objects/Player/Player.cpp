@@ -4,9 +4,12 @@
 #include "../../../Engine/Model.h"
 #include "../../../Engine/Camera.h"
 #include "../../../Engine/SceneManager.h"
-
 #include "../../Others/Rect.h"
+
+#include "../Enemy/Enemy.h"
 #include "../Stage/Stage.h"
+#include "Pickaxe.h"
+
 #include <fstream>
 #include <map>
 #include <iostream>
@@ -60,8 +63,9 @@ void Player::Initialize()
     assert(hPoint_ >= 0);
 
 	pStage_ = (Stage*)FindObject("Stage");
-    
+
     myInventory_.Load("inventory.ini");
+
 }
 
 void Player::Update()
@@ -77,6 +81,13 @@ void Player::Update()
 
     // キャラクターの向きを変更
     ImGui::Text("transform_.rotate_ = %f,%f,%f", transform_.rotate_.x, transform_.rotate_.y, transform_.rotate_.z);
+
+    if (Input::IsMouseButtonDown(0)) {
+        EnemyAttack();
+    }
+
+    if(pEnemy_ != nullptr)
+    ImGui::Text("Enemy HP = %d", pEnemy_->GetHP());
 }
 
 void Player::Draw()
@@ -187,7 +198,6 @@ void Player::Move()
        speed *= 1.5f;
    }
    
-
    // 移動
    XMVECTOR move = direction * speed;
    XMStoreFloat3(&transform_.position_, XMLoadFloat3(&transform_.position_) + move);
@@ -202,6 +212,7 @@ void Player::Move()
        Model::SetAnimFrame(hModel_, 0, 0, 0);
        prevAnim = false;
    }
+
 }
 
 void Player::CalcCameraMove()
@@ -397,6 +408,67 @@ void Player::Mining()
             }
         }
         
+    }
+}
+
+void Player::EnemyAttack()
+{
+    pEnemy_ = (Enemy*)FindObject("Enemy");
+    if (pEnemy_ == nullptr)return;
+    // 視線ベクトルを取得
+    XMVECTOR sightline = XMVector3Normalize(Camera::GetSightline());
+
+    // レイキャストを発射
+    RayCastData sightRay; {
+        XMStoreFloat3(&sightRay.dir, sightline);
+        sightRay.start = Camera::GetPosition();
+        Model::RayCast(pEnemy_->GatModelHandle(), &sightRay);
+    }
+
+    if (sightRay.hit && sightRay.dist <= 10.0f) {
+        // Effectを出す
+        {
+            EmitterData data;
+
+            //炎
+            data.textureFileName = "Images/cloudA.png";
+
+            XMStoreFloat3(&data.position, XMLoadFloat3(&sightRay.start) + (XMLoadFloat3(&sightRay.dir) * sightRay.dist));
+            data.delay = 0;
+            data.number = 80;
+            data.lifeTime = 30;
+            data.direction = XMFLOAT3(0, 1, 0);
+            data.directionRnd = XMFLOAT3(90, 90, 90);
+            data.speed = 0.1f;
+            data.speedRnd = 0.8;
+            data.size = XMFLOAT2(1.2, 1.2);
+            data.sizeRnd = XMFLOAT2(0.4, 0.4);
+            data.scale = XMFLOAT2(1.05, 1.05);
+            data.color = XMFLOAT4(0.5, 0.5, 0.1, 1);
+            data.deltaColor = XMFLOAT4(0, -1.0 / 20, 0, -1.0 / 20);
+            VFX::Start(data);
+
+            //火の粉
+            data.delay = 0;
+            data.number = 80;
+            data.lifeTime = 100;
+            data.positionRnd = XMFLOAT3(0.5, 0, 0.5);
+            data.direction = XMFLOAT3(0, 1, 0);
+            data.directionRnd = XMFLOAT3(90, 90, 90);
+            data.speed = 0.25f;
+            data.speedRnd = 1;
+            data.accel = 0.93;
+            data.size = XMFLOAT2(0.1, 0.1);
+            data.sizeRnd = XMFLOAT2(0.4, 0.4);
+            data.scale = XMFLOAT2(0.99, 0.99);
+            data.color = XMFLOAT4(0.4, 0.2, 0.0, 1);
+            data.deltaColor = XMFLOAT4(0, 0, 0, 0);
+            data.gravity = 0.003f;
+            VFX::Start(data);
+        }
+
+        // 攻撃する
+        pEnemy_->SetHP(pEnemy_->GetHP() - 10);
     }
 }
 

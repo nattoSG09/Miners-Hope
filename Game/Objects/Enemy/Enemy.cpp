@@ -10,10 +10,15 @@ void Enemy::Initialize()
 {
 	hModel_ = Model::Load("Models/Enemy/Walking.fbx");
 	assert(hModel_ >= 0);
+
+	SetHP(1000);
 }
 
 void Enemy::Update()
 {
+	if (hitPoint_ <= 0) {
+		KillMe();
+	}
 }
 
 void Enemy::Draw()

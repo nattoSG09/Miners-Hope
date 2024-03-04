@@ -5,6 +5,8 @@
 #include "../Ores/OreManager.h"
 
 class Stage;
+class Pickaxe;
+class Enemy;
 
 struct Inventory
 {
@@ -22,8 +24,10 @@ class Player : public GameObject
 {
 	int hModel_;
 	Stage* pStage_;
+	Enemy* pEnemy_;
 
 	Inventory myInventory_;
+	Pickaxe* myPickaxe_;
 	XMFLOAT2 angle_;
 	int hPoint_;
 
@@ -42,6 +46,6 @@ private:
 	void Move();
 	void CalcCameraMove();
 	void Mining();
-
+	void EnemyAttack();
 };
 
