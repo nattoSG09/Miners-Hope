@@ -97,7 +97,6 @@ bool Player::IsExitCave()
 {
 	if (pStage_ == nullptr)pStage_ = (Stage*)FindObject("Stage");
 
-
 	switch (pStage_->GetCaveType())
 	{
 	case Cave01: {
