@@ -10,7 +10,7 @@ void HpBar::Initialize()
 {
 	hPict_gauge_ = Image::Load("Images/hp_bar.png");
 	hPict_gauge_ = Image::Load("Images/hp_frame.png");
-	
+
 }
 
 void HpBar::Update()
