@@ -145,81 +145,63 @@ void Player::Move()
     // アニメーションがされているかどうか
     bool isAnim = false;
 
-    // プレイヤーの速度
-    float speed = 0.1f;
+    // 方向ベクトルを設定
+    XMVECTOR direction{}; {
+       // 視線ベクトルを取得
+       XMVECTOR sightline = Camera::GetSightline(); {
+           sightline = XMVectorSetY(sightline, 0);
+           sightline = XMVector3Normalize(sightline);
+       }
 
-    // 視線ベクトルを取得
-    XMVECTOR moveDir = Camera::GetSightline();
+       if (Input::IsKey(DIK_W)) {
+           direction += sightline;
+           isAnim = true;
+           transform_.rotate_.y = angle_.y - 25;
+       }
 
-    // Y方向への移動を制限したいので、Y要素を０にする
-    moveDir = XMVectorSetY(moveDir, 0);
-    moveDir = XMVector3Normalize(moveDir);
+       if (Input::IsKey(DIK_A)) {
+           direction += XMVector3Transform(sightline, XMMatrixRotationY(XMConvertToRadians(-90)));
+           isAnim = true;
+           transform_.rotate_.y = (angle_.y - 25) - 90;
+       }
 
-    // スピードを乗算
-    moveDir *= speed;
+       if (Input::IsKey(DIK_S)) {
+           direction += -sightline;
+           isAnim = true;
+           transform_.rotate_.y = (angle_.y - 25) + 180;
+       }
 
-    // 移動方向ベクトルを用意
-    XMVECTOR move{ 0,0,0,0 };
+       if (Input::IsKey(DIK_D)) {
+           direction += XMVector3Transform(sightline, XMMatrixRotationY(XMConvertToRadians(90)));
+           isAnim = true;
+           transform_.rotate_.y = (angle_.y - 25) + 90;
+       }
 
-    // 「Ｗ」キーが押されたら...
-    if (Input::IsKey(DIK_W)) {
-
-        // 画面前方に進む
-        move = XMLoadFloat3(&transform_.position_) + moveDir;
-        XMStoreFloat3(&transform_.position_, move);
-        transform_.rotate_.y = angle_.y - 25;
-        // アニメーションを動作させる
-        isAnim = true;
+       // 正規化
+       direction = XMVector3Normalize(direction);
     }
 
-    // 「Ａ」キーが押されたら...
-    if (Input::IsKey(DIK_A)) {
+   // 移動速度を設定
+   float speed = 0.1f; 
+   if (Input::IsKey(DIK_LSHIFT)) {
+       speed *= 1.5f;
+   }
+   
 
-        // 画面右方に進む
-        moveDir = XMVector3Transform(moveDir, XMMatrixRotationY(XMConvertToRadians(90)));
-        move = XMLoadFloat3(&transform_.position_) - moveDir;
-        XMStoreFloat3(&transform_.position_, move);
-        transform_.rotate_.y = (angle_.y - 25) - 90;
+   // 移動
+   XMVECTOR move = direction * speed;
+   XMStoreFloat3(&transform_.position_, XMLoadFloat3(&transform_.position_) + move);
 
-        // アニメーションを動作させる
-        isAnim = true;
-    }
-
-    // 「Ｓ」キーが押されたら...
-    if (Input::IsKey(DIK_S)) {
-
-        // 画面後方に進む
-        move = XMLoadFloat3(&transform_.position_) - moveDir;
-        XMStoreFloat3(&transform_.position_, move);
-        transform_.rotate_.y = (angle_.y - 25) + 180;
-
-        // アニメーションを動作させる
-        isAnim = true;
-    }
-
-    // 「Ｄ」キーが押されたら...
-    if (Input::IsKey(DIK_D)) {
-
-        // 画面左方に進む
-        moveDir = XMVector3Transform(moveDir, XMMatrixRotationY(XMConvertToRadians(90)));
-        move = XMLoadFloat3(&transform_.position_) + moveDir;
-        XMStoreFloat3(&transform_.position_, move);
-        transform_.rotate_.y = (angle_.y - 25) + 90;
-
-        // アニメーションを動作させる
-        isAnim = true;
-    }
-
-    // アニメーションを行う
-    static bool prevAnim = false;
-    if (isAnim == true) {
-        if (prevAnim == false)Model::SetAnimFrame(hModel_, 0, 60, 1);
-        prevAnim = true;
-    }
-    else {
-        Model::SetAnimFrame(hModel_, 0, 0, 0);
-        prevAnim = false;
-    }
+   // アニメーションを行う
+   static bool prevAnim = false;
+   if (isAnim == true) {
+       if (prevAnim == false)Model::SetAnimFrame(hModel_, 0, 60, 1);
+       prevAnim = true;
+   }
+   else {
+       Model::SetAnimFrame(hModel_, 0, 0, 0);
+       prevAnim = false;
+   }
 }
 
 void Player::CalcCameraMove()
