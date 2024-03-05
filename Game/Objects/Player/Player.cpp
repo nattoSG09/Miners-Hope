@@ -63,7 +63,6 @@ void Player::Initialize()
     assert(hPoint_ >= 0);
 
 	pStage_ = (Stage*)FindObject("Stage");
-
     myInventory_.Load("inventory.ini");
 
 }
@@ -88,6 +87,7 @@ void Player::Update()
 
     if(pEnemy_ != nullptr)
     ImGui::Text("Enemy HP = %d", pEnemy_->GetHP());
+
 }
 
 void Player::Draw()
@@ -256,7 +256,7 @@ void Player::CalcCameraMove()
         center_To_camTarget = XMVector3Transform(center_To_camTarget, rotateY);
 
         // ’·‚³‚ð‰Á‚¦‚é
-        float center_To_camTargetDistance = 6.f;
+        float center_To_camTargetDistance = 7.f;
         if (Input::IsMouseButton(1))center_To_camTargetDistance = 3.f;
 
         center_To_camTarget *= center_To_camTargetDistance;
@@ -269,7 +269,7 @@ void Player::CalcCameraMove()
         XMVECTOR center_To_camPosition = -center_To_camTarget;
 
         // ‚¿‚å‚Á‚Æ‰ñ“]‚³‚¹‚é
-        float littleAngle = -45.f;
+        float littleAngle = -30.f;
         if (Input::IsMouseButton(1))littleAngle = -60.f;
         center_To_camPosition = XMVector3Transform(center_To_camPosition, XMMatrixRotationY(XMConvertToRadians(littleAngle)));
 
@@ -468,7 +468,7 @@ void Player::EnemyAttack()
         }
 
         // UŒ‚‚·‚é
-        pEnemy_->SetHP(pEnemy_->GetHP() - 10);
+        pEnemy_->SetHP(pEnemy_->GetHP() - 2);
     }
 }
 

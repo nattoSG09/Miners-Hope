@@ -11,7 +11,7 @@ void Enemy::Initialize()
 	hModel_ = Model::Load("Models/Enemy/Walking.fbx");
 	assert(hModel_ >= 0);
 
-	SetHP(1000);
+	SetHP(200);
 }
 
 void Enemy::Update()

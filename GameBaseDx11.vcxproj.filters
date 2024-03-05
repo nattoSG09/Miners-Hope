@@ -193,6 +193,10 @@
     </ClCompile>
     <ClCompile Include="Game\Objects\LivingObject.cpp" />
     <ClCompile Include="Game\Objects\Enemy\Enemy.cpp" />
+    <ClCompile Include="Game\Objects\Player\Pickaxe.cpp" />
+    <ClCompile Include="Game\Objects\Images\HPBar.cpp">
+      <Filter>Game\Objects\Images</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\BoxCollider.h">
@@ -329,6 +333,10 @@
     </ClInclude>
     <ClInclude Include="Game\Objects\LivingObject.h" />
     <ClInclude Include="Game\Objects\Enemy\Enemy.h" />
+    <ClInclude Include="Game\Objects\Player\Pickaxe.h" />
+    <ClInclude Include="Game\Objects\Images\HPBar.h">
+      <Filter>Game\Objects\Images</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Shader\Simple2D.hlsl">

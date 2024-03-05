@@ -170,6 +170,7 @@
     <ClCompile Include="Game\Objects\Images\TitleImage.cpp" />
     <ClCompile Include="Game\Objects\LivingObject.cpp" />
     <ClCompile Include="Game\Objects\Player\Pickaxe.cpp" />
+    <ClCompile Include="Game\Objects\Images\HPBar.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Enemy\Enemy.h" />
@@ -219,6 +220,7 @@
     <ClInclude Include="Game\Objects\Images\TitleImage.h" />
     <ClInclude Include="Game\Objects\LivingObject.h" />
     <ClInclude Include="Game\Objects\Player\Pickaxe.h" />
+    <ClInclude Include="Game\Objects\Images\HPBar.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Shader\BillBoard.hlsl">

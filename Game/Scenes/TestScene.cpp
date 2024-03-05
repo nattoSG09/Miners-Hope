@@ -9,7 +9,7 @@
 #include<iostream>
 #include "../Objects/Ores/OreManager.h"
 #include "../Objects/Images/CrossHair.h"
-
+#include "../Objects/Images/HPBar.h"
 
 //コンストラクタ
 TestScene::TestScene(GameObject * parent)
@@ -26,6 +26,8 @@ void TestScene::Initialize()
 	//Stage*  pStage = CreateStage<Stage>(static_cast<Cave_type>(rand() % CaveMax), this);
 	Stage* pStage = CreateStage<Stage>(static_cast<Cave_type>(Cave05), this);
 
+
+	Enemy* pEnemy=nullptr;
 	if (pStage->GetCaveType() != Cave05) {
 		// 鉱石を生成
 		for (int i = 0; i <= 15; i++) {
@@ -34,13 +36,16 @@ void TestScene::Initialize()
 	}
 	else {
 		// 敵を生成
-		Instantiate<Enemy>(this);
+		pEnemy = Instantiate<Enemy>(this);
 	}
 
 	// プレイヤーを生成
 	pPlayer_ = Instantiate<Player>(this);
 
 	Instantiate<CrossHair>(this);
+
+	HPBar* pHpbar = Instantiate<HPBar>(this);
+	pHpbar->SetObject(pEnemy);
 }
 
 //更新
