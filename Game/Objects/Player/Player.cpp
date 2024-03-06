@@ -68,6 +68,7 @@ void Player::Initialize()
     transform_.position_.z = -17.f;
 }
 
+
 void Player::Update()
 {
     // ƒJƒƒ‰‚ÌˆÊ’u‚ğ‘€ì
