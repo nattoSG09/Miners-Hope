@@ -63,6 +63,9 @@
     <Filter Include="Game\Objects\Images">
       <UniqueIdentifier>{165023b8-db5d-4d24-bba5-82d5f0dd10c2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Scenes\EndScene">
+      <UniqueIdentifier>{2fcc6219-8bc1-435e-a88a-4cd81ad8b325}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\BoxCollider.cpp">
@@ -196,6 +199,9 @@
     <ClCompile Include="Game\Objects\Player\Pickaxe.cpp" />
     <ClCompile Include="Game\Objects\Images\HPBar.cpp">
       <Filter>Game\Objects\Images</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scenes\EndScene.cpp">
+      <Filter>Game\Scenes\EndScene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -336,6 +342,9 @@
     <ClInclude Include="Game\Objects\Player\Pickaxe.h" />
     <ClInclude Include="Game\Objects\Images\HPBar.h">
       <Filter>Game\Objects\Images</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scenes\EndScene.h">
+      <Filter>Game\Scenes\EndScene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

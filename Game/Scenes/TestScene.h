@@ -2,11 +2,15 @@
 #include "../../Engine/GameObject.h"
 
 class Player;
+class Enemy;
+class Stage;
 
 //テストシーンを管理するクラス
 class TestScene : public GameObject
 {
 	Player* pPlayer_;
+	Enemy* pEnemy_;
+	Stage* pStage_;
 public:
 	//コンストラクタ
 	//引数：parent  親オブジェクト（SceneManager）

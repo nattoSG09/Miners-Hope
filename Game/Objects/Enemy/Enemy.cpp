@@ -1,5 +1,6 @@
 #include "Enemy.h"
 #include "../../../Engine/Model.h"
+#include "../Images/HPBar.h"
 
 Enemy::Enemy(GameObject* parent)
 	:LivingObject(parent,"Enemy")
@@ -12,6 +13,9 @@ void Enemy::Initialize()
 	assert(hModel_ >= 0);
 
 	SetHP(200);
+
+	HPBar* pHpbar = Instantiate<HPBar>(this);
+	pHpbar->SetObject(this);
 }
 
 void Enemy::Update()

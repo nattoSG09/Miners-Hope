@@ -125,6 +125,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Game\Scenes\EndScene.cpp" />
     <ClCompile Include="Game\Objects\Enemy\Enemy.cpp" />
     <ClCompile Include="Game\Objects\Images\CrossHair.cpp" />
     <ClCompile Include="Engine\Audio.cpp" />
@@ -173,6 +174,7 @@
     <ClCompile Include="Game\Objects\Images\HPBar.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\Scenes\EndScene.h" />
     <ClInclude Include="Game\Objects\Enemy\Enemy.h" />
     <ClInclude Include="Game\Objects\Images\CrossHair.h" />
     <ClInclude Include="Engine\Audio.h" />

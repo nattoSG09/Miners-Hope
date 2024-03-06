@@ -5,6 +5,7 @@
 #include "../Game/Scenes/LoadScene.h"
 #include "../Game/Scenes/ResultScene.h"
 #include "../Game/Scenes/TitleScene.h"
+#include "../Game/Scenes/EndScene.h"
 
 #include "Model.h"
 #include "Image.h"
@@ -47,8 +48,10 @@ void SceneManager::Update()
 		switch (nextSceneID_)
 		{
 		case SCENE_ID_TEST: Instantiate<TestScene>(this); break;
+		case SCENE_ID_TITLE: Instantiate<TitleScene>(this); break;
 		case SCENE_ID_LOAD: Instantiate<LoadScene>(this); break;
 		case SCENE_ID_RESULT: Instantiate<ResultScene>(this); break;
+		case SCENE_ID_END: Instantiate<EndScene>(this); break;
 		}
 
 		Audio::Initialize();

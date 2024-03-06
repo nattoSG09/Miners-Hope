@@ -9,7 +9,6 @@
 #include<iostream>
 #include "../Objects/Ores/OreManager.h"
 #include "../Objects/Images/CrossHair.h"
-#include "../Objects/Images/HPBar.h"
 
 //コンストラクタ
 TestScene::TestScene(GameObject * parent)
@@ -23,12 +22,11 @@ void TestScene::Initialize()
 	srand((unsigned int)time(nullptr));
 
 	// ステージを生成
-	//Stage*  pStage = CreateStage<Stage>(static_cast<Cave_type>(rand() % CaveMax), this);
-	Stage* pStage = CreateStage<Stage>(static_cast<Cave_type>(Cave05), this);
+	pStage_ = CreateStage<Stage>(static_cast<Cave_type>(rand() % CaveMax), this);
+	//pStage_ = CreateStage<Stage>(static_cast<Cave_type>(Cave05), this);
 
-
-	Enemy* pEnemy=nullptr;
-	if (pStage->GetCaveType() != Cave05) {
+	pEnemy_ = nullptr;
+	if (pStage_->GetCaveType() != Cave05) {
 		// 鉱石を生成
 		for (int i = 0; i <= 15; i++) {
 			OreManager::CreateOre(static_cast<Ore_type>(rand() % Ore_Max), XMFLOAT3(rand() % 49 - 24, 0, rand() % 49 - 24), (rand() % 3) + 1, this);
@@ -36,29 +34,31 @@ void TestScene::Initialize()
 	}
 	else {
 		// 敵を生成
-		pEnemy = Instantiate<Enemy>(this);
+		pEnemy_ = Instantiate<Enemy>(this);
 	}
 
 	// プレイヤーを生成
 	pPlayer_ = Instantiate<Player>(this);
 
 	Instantiate<CrossHair>(this);
-
-	HPBar* pHpbar = Instantiate<HPBar>(this);
-	pHpbar->SetObject(pEnemy);
 }
 
 //更新
 void TestScene::Update()
 {
+	SceneManager* pSm = (SceneManager*)FindObject("SceneManager");
+
 	// プレイヤーが出入口を移動したら...
 	if (pPlayer_->IsExitCave() == true) {
 
-		SceneManager* pSm = (SceneManager*)FindObject("SceneManager");
 		// ７％の確率で脱出
 		if (rand() % 100 < 7) pSm->ChangeScene(SCENE_ID_RESULT, TID_WHITEOUT, 2.f);
 		else pSm->ChangeScene(SCENE_ID_LOAD, TID_BLACKOUT, 1.f);
 	}
+
+	if(pEnemy_ != nullptr)
+	if (pEnemy_->GetHP() <= 0)pSm->ChangeScene(SCENE_ID_RESULT, TID_WHITEOUT, 2.f);
+
 }
 
 //描画

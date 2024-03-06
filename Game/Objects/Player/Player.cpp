@@ -78,8 +78,6 @@ void Player::Update()
     // 採掘操作
     Mining();
 
-    // キャラクターの向きを変更
-    ImGui::Text("transform_.rotate_ = %f,%f,%f", transform_.rotate_.x, transform_.rotate_.y, transform_.rotate_.z);
 
     if (Input::IsMouseButtonDown(0)) {
         EnemyAttack();
@@ -313,14 +311,14 @@ void Player::CalcCameraMove()
 
 void Player::Mining()
 {
-    ImGui::Begin("Inventory"); {
+    /*ImGui::Begin("Inventory"); {
         ImGui::Text("num_Iron = %d", myInventory_.num_Iron);
         ImGui::Text("num_Gold = %d", myInventory_.num_Gold);
         ImGui::Text("num_Diamond = %d", myInventory_.num_Diamond);
         ImGui::Text("num_Emerald = %d", myInventory_.num_Emerald);
         ImGui::Text("num_Ruby = %d", myInventory_.num_Ruby);
     }
-    ImGui::End();
+    ImGui::End();*/
 
     int i = 0;
     for (auto& ore : OreManager::ores_) {
@@ -468,7 +466,7 @@ void Player::EnemyAttack()
         }
 
         // 攻撃する
-        pEnemy_->SetHP(pEnemy_->GetHP() - 2);
+        pEnemy_->SetHP(pEnemy_->GetHP() - 20);
     }
 }
 
