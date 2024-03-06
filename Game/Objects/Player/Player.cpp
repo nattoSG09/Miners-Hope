@@ -65,6 +65,7 @@ void Player::Initialize()
 	pStage_ = (Stage*)FindObject("Stage");
     myInventory_.Load("inventory.ini");
 
+    transform_.position_.z = -17.f;
 }
 
 void Player::Update()
@@ -77,7 +78,6 @@ void Player::Update()
    
     // çÃå@ëÄçÏ
     Mining();
-
 
     if (Input::IsMouseButtonDown(0)) {
         EnemyAttack();
